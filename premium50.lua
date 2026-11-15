@@ -2923,12 +2923,12 @@ reference = (function()
 	end)
 end)()
 
-currentShade1 = Color3.fromRGB(12, 14, 22)
-currentShade2 = Color3.fromRGB(22, 26, 40)
-currentShade3 = Color3.fromRGB(0, 190, 240)
+currentShade1 = Color3.fromRGB(16, 9, 32)
+currentShade2 = Color3.fromRGB(30, 17, 56)
+currentShade3 = Color3.fromRGB(150, 80, 255)
 currentText1 = Color3.new(1, 1, 1)
 currentText2 = Color3.new(0, 0, 0)
-currentScroll = Color3.fromRGB(0, 190, 240)
+currentScroll = Color3.fromRGB(150, 80, 255)
 
 defaultGuiScale = IsOnMobile and 0.9 or 1
 defaultsettings = {
@@ -3057,7 +3057,7 @@ local loadedEventData = nil
 local jsonAttempts = 0
 function saves()
 	if writefileExploit() and readfileExploit() and jsonAttempts < 10 then
-		local readSuccess, out = readfile("KizzDev_FE.iy", true)
+		local readSuccess, out = readfile("KizzDev_FE2.iy", true)
 		if readSuccess then
 			if out ~= nil and tostring(out):gsub("%s", "") ~= "" then
 				local success, response = pcall(function()
@@ -3087,14 +3087,14 @@ function saves()
 					jsonAttempts = jsonAttempts + 1
 					warn("Save Json Error:", response)
 					warn("Overwriting Save File")
-					writefile("KizzDev_FE.iy", defaults, true)
+					writefile("KizzDev_FE2.iy", defaults, true)
 					wait()
 					saves()
 				end
 			else
-				writefile("KizzDev_FE.iy", defaults, true)
+				writefile("KizzDev_FE2.iy", defaults, true)
 				wait()
-				local dReadSuccess, dOut = readfile("KizzDev_FE.iy", true)
+				local dReadSuccess, dOut = readfile("KizzDev_FE2.iy", true)
 				if dReadSuccess and dOut ~= nil and tostring(dOut):gsub("%s", "") ~= "" then
 					saves()
 				else
@@ -3104,9 +3104,9 @@ function saves()
 				end
 			end
 		else
-			writefile("KizzDev_FE.iy", defaults, true)
+			writefile("KizzDev_FE2.iy", defaults, true)
 			wait()
-			local dReadSuccess, dOut = readfile("KizzDev_FE.iy", true)
+			local dReadSuccess, dOut = readfile("KizzDev_FE2.iy", true)
 			if dReadSuccess and dOut ~= nil and tostring(dOut):gsub("%s", "") ~= "" then
 				saves()
 			else
@@ -3152,7 +3152,7 @@ function updatesaves()
 			currentScroll = {currentScroll.R,currentScroll.G,currentScroll.B};
 			eventBinds = eventEditor.SaveData()
 		}
-		writefileCooldown("KizzDev_FE.iy", HttpService:JSONEncode(update))
+		writefileCooldown("KizzDev_FE2.iy", HttpService:JSONEncode(update))
 	end
 end
 
@@ -3387,8 +3387,12 @@ end
 IYMouse.KeyDown:Connect(function(Key)
 	if (Key==prefix) then
 		RunService.RenderStepped:Wait()
-		Cmdbar:CaptureFocus()
-		maximizeHolder()
+		if KizzFocusCmd then
+			KizzFocusCmd()
+		else
+			Cmdbar:CaptureFocus()
+			maximizeHolder()
+		end
 	end
 end)
 
@@ -3863,12 +3867,12 @@ ColorsButton.MouseButton1Click:Connect(function()
 			updatesaves()
 		end
 		Npicker.Default = function(self)
-			updateColors(Color3.fromRGB(12, 14, 22),shade1)
-			updateColors(Color3.fromRGB(22, 26, 40),shade2)
-			updateColors(Color3.fromRGB(0, 190, 240),shade3)
+			updateColors(Color3.fromRGB(16, 9, 32),shade1)
+			updateColors(Color3.fromRGB(30, 17, 56),shade2)
+			updateColors(Color3.fromRGB(150, 80, 255),shade3)
 			updateColors(Color3.new(1, 1, 1),text1)
 			updateColors(Color3.new(0, 0, 0),text2)
-			updateColors(Color3.fromRGB(0, 190, 240),scroll)
+			updateColors(Color3.fromRGB(150, 80, 255),scroll)
 			wait()
 			updatesaves()
 		end
@@ -13145,7 +13149,7 @@ addcmd("debug", {}, function(args, speaker)
     return _G.IY_DEBUG and "Enabled" or "Disabled"
 end)
 
-if IsOnMobile then
+if false and IsOnMobile then
 	local QuickCapture = Instance.new("TextButton")
 	local UICorner = Instance.new("UICorner")
 	QuickCapture.Name = randomString()
@@ -13344,9 +13348,9 @@ end)
 -- KizzDev: Home panel + animasi loading + intro baru
 -- (Infinite Yield dibuat oleh Edge, Zwolf, Moon, Toon, Peyton, ATP)
 -- =====================================================================
-local KIZZ_CYAN = Color3.fromRGB(0, 190, 240)
-local KIZZ_BG = Color3.fromRGB(12, 14, 22)
-local KIZZ_BG2 = Color3.fromRGB(22, 26, 40)
+local KIZZ_CYAN = Color3.fromRGB(170, 90, 255)
+local KIZZ_BG = Color3.fromRGB(16, 9, 32)
+local KIZZ_BG2 = Color3.fromRGB(32, 18, 60)
 
 -- garis tepi cyan di window utama & notifikasi
 pcall(function()
@@ -13360,123 +13364,335 @@ pcall(function()
 	Title.TextColor3 = KIZZ_CYAN
 end)
 
--- ---------- KIZZDEV HUB (pengganti panel Home) ----------
+-- ---------- KIZZDEV HUB v2 (gaya Rayfield, tema ungu anime) ----------
 local displayName = Players.LocalPlayer.DisplayName
 local KizzHub = {}
+pcall(function() Holder.Visible = false end) -- panel klasik di bawah disembunyikan
+
+-- >>> ISI DI SINI kalau mau pakai gambar sendiri (link https langsung ke png/jpg, atau rbxassetid://ID) <<<
+local KIZZ_BANNER_URL = "" -- banner/header (contoh: gambar anime ungu lebar)
+local KIZZ_AVATAR_URL = "" -- foto profil bulat (kosong = pakai headshot Roblox kamu)
+
+local P = {
+	bg = Color3.fromRGB(14, 8, 28),
+	side = Color3.fromRGB(22, 12, 44),
+	cell = Color3.fromRGB(32, 18, 60),
+	accent = Color3.fromRGB(160, 80, 255),
+	accent2 = Color3.fromRGB(255, 90, 220),
+	text = Color3.new(1, 1, 1),
+	sub = Color3.fromRGB(175, 155, 215),
+}
+
+local function kizzAsset(src)
+	if type(src) ~= "string" or src == "" then return nil end
+	if src:match("^%d+$") then return "rbxassetid://" .. src end
+	if src:match("^rbxassetid://") or src:match("^rbxthumb://") or src:match("^rbxasset://") then return src end
+	if src:match("^https?://") and writefile and isfile and makefolder and isfolder then
+		local ok, res = pcall(function()
+			if not isfolder("kizzdev") then makefolder("kizzdev") end
+			local clean = src:gsub("[^%w]", "")
+			local path = "kizzdev/img_" .. clean:sub(-30) .. ".png"
+			if not isfile(path) then writefile(path, game:HttpGet(src)) end
+			return getcustomasset(path)
+		end)
+		if ok and res and res ~= "" then return res end
+	end
+	return nil
+end
+
+local function corner(obj, r)
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0, r)
+	c.Parent = obj
+	return c
+end
+
+local function gradientStroke(obj, thick, c1, c2)
+	local st = Instance.new("UIStroke")
+	st.Color = Color3.new(1, 1, 1)
+	st.Thickness = thick
+	st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	st.Parent = obj
+	local g = Instance.new("UIGradient")
+	g.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, c1),
+		ColorSequenceKeypoint.new(0.5, c2),
+		ColorSequenceKeypoint.new(1, c1),
+	})
+	g.Parent = st
+	task.spawn(function()
+		local r = 0
+		while g.Parent do
+			r = (r + 3) % 360
+			g.Rotation = r
+			task.wait(0.03)
+		end
+	end)
+	return st, g
+end
+
+local function accentGradient(obj)
+	local g = Instance.new("UIGradient")
+	g.Color = ColorSequence.new(P.accent, P.accent2)
+	g.Parent = obj
+	return g
+end
+
+local function gradBtn(parent, text, size, pos, textSize, z, radius)
+	local b = Instance.new("TextButton")
+	b.BackgroundTransparency = 1
+	b.BorderSizePixel = 0
+	b.Text = ""
+	b.Size = size
+	b.Position = pos
+	b.ZIndex = z
+	b.Parent = parent
+	corner(b, radius)
+	local bg = Instance.new("Frame")
+	bg.BackgroundColor3 = Color3.new(1, 1, 1)
+	bg.BorderSizePixel = 0
+	bg.Size = UDim2.new(1, 0, 1, 0)
+	bg.ZIndex = z
+	bg.Parent = b
+	corner(bg, radius)
+	accentGradient(bg)
+	local l = Instance.new("TextLabel")
+	l.BackgroundTransparency = 1
+	l.Size = UDim2.new(1, 0, 1, 0)
+	l.Font = Enum.Font.GothamBold
+	l.TextSize = textSize
+	l.Text = text
+	l.TextColor3 = Color3.new(1, 1, 1)
+	l.ZIndex = z + 1
+	l.Parent = b
+	return b, bg, l
+end
+
+local function makeDraggable(handle, target, onClickOnly)
+	local dragging, moved, dragStart, startPos = false, false, nil, nil
+	handle.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging, moved = true, false
+			dragStart = input.Position
+			startPos = target.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			end)
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local d = input.Position - dragStart
+			if d.Magnitude > 6 then moved = true end
+			if moved then
+				local sc = (Scale and Scale.Scale) or 1
+				target.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X / sc, startPos.Y.Scale, startPos.Y.Offset + d.Y / sc)
+			end
+		end
+	end)
+	return function() return moved end
+end
+
 do
-	local HUB_W, HUB_H = 470, 340
+	local HUB_W, HUB_H = 510, 345
+	local SIDE_W = 124
 	local featureCount = 0
 
+	-- ===== window utama =====
 	local root = Instance.new("Frame")
 	root.Name = randomString()
 	root.Parent = ScaledHolder
 	root.Active = true
-	root.BackgroundColor3 = currentShade2
+	root.AnchorPoint = Vector2.new(0.5, 0.5)
+	root.Position = UDim2.fromScale(0.5, 0.5)
+	root.Size = UDim2.fromOffset(HUB_W, HUB_H)
+	root.BackgroundColor3 = P.bg
 	root.BorderSizePixel = 0
-	root.Position = UDim2.new(0.5, -HUB_W / 2, 0.5, -HUB_H / 2)
-	root.Size = UDim2.new(0, HUB_W, 0, 26)
 	root.ZIndex = 20
 	root.Visible = false
-	table.insert(shade2, root)
+	corner(root, 14)
+	local bgGrad = Instance.new("UIGradient")
+	bgGrad.Rotation = 90
+	bgGrad.Color = ColorSequence.new(Color3.fromRGB(28, 14, 56), Color3.fromRGB(10, 5, 22))
+	bgGrad.Parent = root
+	gradientStroke(root, 2, P.accent, P.accent2)
+	local rootScale = Instance.new("UIScale")
+	rootScale.Scale = 0.6
+	rootScale.Parent = root
+
+	-- glow / banner header
+	local glow = Instance.new("Frame")
+	glow.BackgroundColor3 = P.accent
+	glow.BorderSizePixel = 0
+	glow.Size = UDim2.new(1, 0, 0, 86)
+	glow.ZIndex = 20
+	glow.Parent = root
+	corner(glow, 14)
+	local glowG = Instance.new("UIGradient")
+	glowG.Rotation = 90
+	glowG.Transparency = NumberSequence.new(0.55, 1)
+	glowG.Color = ColorSequence.new(P.accent, P.accent2)
+	glowG.Parent = glow
+
+	local banner = Instance.new("ImageLabel")
+	banner.BackgroundTransparency = 1
+	banner.Size = UDim2.new(1, 0, 0, 96)
+	banner.ScaleType = Enum.ScaleType.Crop
+	banner.ImageTransparency = 0.2
+	banner.ZIndex = 21
+	banner.Visible = false
+	banner.Parent = root
+	corner(banner, 14)
+	local bannerFade = Instance.new("UIGradient")
+	bannerFade.Rotation = 90
+	bannerFade.Transparency = NumberSequence.new(0, 1)
+	bannerFade.Parent = banner
+
+	-- ===== top bar =====
+	local top = Instance.new("Frame")
+	top.BackgroundTransparency = 1
+	top.Size = UDim2.new(1, -76, 0, 40)
+	top.ZIndex = 23
+	top.Parent = root
 
 	local titleL = Instance.new("TextLabel")
 	titleL.BackgroundTransparency = 1
-	titleL.Position = UDim2.new(0, 8, 0, 0)
-	titleL.Size = UDim2.new(1, -40, 1, 0)
-	titleL.Font = Enum.Font.GothamBold
-	titleL.TextSize = 14
-	titleL.Text = "KizzDev Hub"
-	titleL.TextColor3 = KIZZ_CYAN
+	titleL.Position = UDim2.new(0, 14, 0, 4)
+	titleL.Size = UDim2.new(0, 110, 0, 30)
+	titleL.Font = Enum.Font.GothamBlack
+	titleL.TextSize = 22
+	titleL.Text = "KizzDev"
+	titleL.TextColor3 = Color3.new(1, 1, 1)
 	titleL.TextXAlignment = Enum.TextXAlignment.Left
-	titleL.ZIndex = 21
-	titleL.Parent = root
+	titleL.ZIndex = 24
+	titleL.Parent = top
+	accentGradient(titleL)
 
-	local closeB = Instance.new("TextButton")
-	closeB.BackgroundTransparency = 1
-	closeB.Position = UDim2.new(1, -26, 0, 0)
-	closeB.Size = UDim2.new(0, 26, 0, 26)
-	closeB.Font = Enum.Font.GothamBold
-	closeB.TextSize = 14
-	closeB.Text = "X"
-	closeB.TextColor3 = Color3.new(1, 1, 1)
-	closeB.ZIndex = 22
-	closeB.Parent = root
-	closeB.MouseButton1Click:Connect(function() root.Visible = false end)
+	local subL = Instance.new("TextLabel")
+	subL.BackgroundTransparency = 1
+	subL.Position = UDim2.new(0, 124, 0, 11)
+	subL.Size = UDim2.new(1, -130, 0, 16)
+	subL.Font = Enum.Font.GothamMedium
+	subL.TextSize = 11
+	subL.Text = "Hub"
+	subL.TextColor3 = P.sub
+	subL.TextXAlignment = Enum.TextXAlignment.Left
+	subL.ZIndex = 24
+	subL.Parent = top
 
-	local body = Instance.new("Frame")
-	body.Name = "Body"
-	body.Parent = root
-	body.Active = true
-	body.BackgroundColor3 = currentShade1
-	body.BorderSizePixel = 0
-	body.Position = UDim2.new(0, 0, 0, 26)
-	body.Size = UDim2.new(1, 0, 0, HUB_H - 26)
-	body.ZIndex = 20
-	table.insert(shade1, body)
-	local bodyStroke = Instance.new("UIStroke")
-	bodyStroke.Color = KIZZ_CYAN
-	bodyStroke.Thickness = 1.5
-	bodyStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	bodyStroke.Parent = body
+	local function circleBtn(xOff, text)
+		local b = Instance.new("TextButton")
+		b.BackgroundColor3 = P.cell
+		b.Position = UDim2.new(1, xOff, 0, 9)
+		b.Size = UDim2.new(0, 24, 0, 24)
+		b.Font = Enum.Font.GothamBold
+		b.TextSize = 13
+		b.Text = text
+		b.TextColor3 = Color3.new(1, 1, 1)
+		b.BorderSizePixel = 0
+		b.ZIndex = 25
+		b.Parent = root
+		corner(b, 12)
+		return b
+	end
+	local closeB = circleBtn(-34, "X")
+	local minB = circleBtn(-64, "-")
 
-	-- daftar tab (kiri)
+	-- ===== sidebar =====
+	local side = Instance.new("Frame")
+	side.BackgroundColor3 = P.side
+	side.BackgroundTransparency = 0.1
+	side.BorderSizePixel = 0
+	side.Position = UDim2.new(0, 8, 0, 46)
+	side.Size = UDim2.new(0, SIDE_W, 1, -92)
+	side.ZIndex = 22
+	side.Parent = root
+	corner(side, 12)
+
+	-- profil bulat dengan cincin berputar
+	local avatar = Instance.new("ImageLabel")
+	avatar.BackgroundColor3 = P.cell
+	avatar.Position = UDim2.new(0, 8, 0, 8)
+	avatar.Size = UDim2.new(0, 38, 0, 38)
+	avatar.ScaleType = Enum.ScaleType.Crop
+	avatar.ZIndex = 23
+	avatar.Parent = side
+	corner(avatar, 19)
+	gradientStroke(avatar, 2, P.accent, P.accent2)
+
+	local nameL = Instance.new("TextLabel")
+	nameL.BackgroundTransparency = 1
+	nameL.Position = UDim2.new(0, 52, 0, 9)
+	nameL.Size = UDim2.new(1, -56, 0, 18)
+	nameL.Font = Enum.Font.GothamBold
+	nameL.TextSize = 12
+	nameL.Text = displayName
+	nameL.TextColor3 = P.text
+	nameL.TextXAlignment = Enum.TextXAlignment.Left
+	nameL.TextTruncate = Enum.TextTruncate.AtEnd
+	nameL.ZIndex = 23
+	nameL.Parent = side
+	local userL = nameL:Clone()
+	userL.Position = UDim2.new(0, 52, 0, 26)
+	userL.Size = UDim2.new(1, -56, 0, 16)
+	userL.Font = Enum.Font.Gotham
+	userL.TextSize = 10
+	userL.Text = "@" .. Players.LocalPlayer.Name
+	userL.TextColor3 = P.sub
+	userL.Parent = side
+
 	local tabList = Instance.new("ScrollingFrame")
 	tabList.BackgroundTransparency = 1
 	tabList.BorderSizePixel = 0
-	tabList.Position = UDim2.new(0, 4, 0, 4)
-	tabList.Size = UDim2.new(0, 100, 1, -42)
+	tabList.Position = UDim2.new(0, 4, 0, 54)
+	tabList.Size = UDim2.new(1, -8, 1, -58)
 	tabList.ScrollBarThickness = 0
 	tabList.CanvasSize = UDim2.new(0, 0, 0, 0)
 	tabList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-	tabList.ZIndex = 21
-	tabList.Parent = body
+	tabList.ZIndex = 23
+	tabList.Parent = side
 	local tabLayout = Instance.new("UIListLayout")
-	tabLayout.Padding = UDim.new(0, 4)
+	tabLayout.Padding = UDim.new(0, 3)
 	tabLayout.Parent = tabList
 
-	-- area halaman (kanan)
+	-- ===== area halaman =====
 	local pageArea = Instance.new("Frame")
 	pageArea.BackgroundTransparency = 1
-	pageArea.Position = UDim2.new(0, 108, 0, 4)
-	pageArea.Size = UDim2.new(1, -112, 1, -42)
-	pageArea.ZIndex = 21
-	pageArea.Parent = body
+	pageArea.Position = UDim2.new(0, SIDE_W + 16, 0, 46)
+	pageArea.Size = UDim2.new(1, -(SIDE_W + 24), 1, -92)
+	pageArea.ZIndex = 22
+	pageArea.Parent = root
 
-	-- bar command bawah
+	-- ===== command bar bawah =====
+	local cmdWrap = Instance.new("Frame")
+	cmdWrap.BackgroundColor3 = P.side
+	cmdWrap.BorderSizePixel = 0
+	cmdWrap.Position = UDim2.new(0, 8, 1, -40)
+	cmdWrap.Size = UDim2.new(1, -16, 0, 32)
+	cmdWrap.ZIndex = 22
+	cmdWrap.Parent = root
+	corner(cmdWrap, 10)
+	local cmdStroke = Instance.new("UIStroke")
+	cmdStroke.Color = P.accent
+	cmdStroke.Transparency = 0.6
+	cmdStroke.Parent = cmdWrap
+
 	local cmdBox = Instance.new("TextBox")
-	cmdBox.BackgroundColor3 = currentShade2
-	cmdBox.BorderSizePixel = 0
-	cmdBox.Position = UDim2.new(0, 4, 1, -34)
-	cmdBox.Size = UDim2.new(1, -70, 0, 28)
+	cmdBox.BackgroundTransparency = 1
+	cmdBox.Position = UDim2.new(0, 12, 0, 0)
+	cmdBox.Size = UDim2.new(1, -86, 1, 0)
 	cmdBox.Font = Enum.Font.Gotham
 	cmdBox.TextSize = 13
 	cmdBox.Text = ""
 	cmdBox.PlaceholderText = "Ketik command apa saja (contoh: fly 50) lalu Enter / Run"
-	cmdBox.TextColor3 = Color3.new(1, 1, 1)
+	cmdBox.PlaceholderColor3 = P.sub
+	cmdBox.TextColor3 = P.text
 	cmdBox.ClearTextOnFocus = false
 	cmdBox.TextXAlignment = Enum.TextXAlignment.Left
-	cmdBox.ZIndex = 22
-	cmdBox.Parent = body
-	table.insert(shade2, cmdBox)
-	local cmdPad = Instance.new("UIPadding")
-	cmdPad.PaddingLeft = UDim.new(0, 8)
-	cmdPad.Parent = cmdBox
-	Instance.new("UICorner", cmdBox).CornerRadius = UDim.new(0, 6)
+	cmdBox.ZIndex = 23
+	cmdBox.Parent = cmdWrap
 
-	local runB = Instance.new("TextButton")
-	runB.BackgroundColor3 = currentShade3
-	runB.BorderSizePixel = 0
-	runB.Position = UDim2.new(1, -62, 1, -34)
-	runB.Size = UDim2.new(0, 58, 0, 28)
-	runB.Font = Enum.Font.GothamBold
-	runB.TextSize = 13
-	runB.Text = "Run"
-	runB.TextColor3 = Color3.new(0, 0, 0)
-	runB.ZIndex = 22
-	runB.Parent = body
-	table.insert(shade3, runB)
-	table.insert(text2, runB)
-	Instance.new("UICorner", runB).CornerRadius = UDim.new(0, 6)
+	local runB = gradBtn(cmdWrap, "Run", UDim2.new(0, 66, 1, -6), UDim2.new(1, -70, 0, 3), 13, 24, 8)
 
 	local function runTyped()
 		local t = cmdBox.Text
@@ -13488,30 +13704,24 @@ do
 	runB.MouseButton1Click:Connect(runTyped)
 	cmdBox.FocusLost:Connect(function(enter) if enter then runTyped() end end)
 
-	-- ---------- sistem tab/halaman ----------
+	-- ===== sistem tab / halaman =====
 	local pages, tabBtns = {}, {}
 	local function selectTab(name)
 		for n, p in pairs(pages) do p.Visible = (n == name) end
-		for n, b in pairs(tabBtns) do
+		for n, t in pairs(tabBtns) do
 			local on = (n == name)
-			b.BackgroundColor3 = on and currentShade3 or currentShade2
-			b.TextColor3 = on and currentText2 or currentText1
+			TweenService:Create(t[1], TweenInfo.new(0.2), {BackgroundTransparency = on and 0 or 1}):Play()
+			TweenService:Create(t[2], TweenInfo.new(0.2), {TextColor3 = on and Color3.new(1, 1, 1) or P.sub}):Play()
 		end
 	end
 
-	local function addTab(name, grid)
-		local b = Instance.new("TextButton")
-		b.Size = UDim2.new(1, -2, 0, 28)
-		b.BackgroundColor3 = currentShade2
-		b.BorderSizePixel = 0
-		b.Font = Enum.Font.GothamMedium
-		b.TextSize = 13
-		b.Text = name
-		b.TextColor3 = Color3.new(1, 1, 1)
-		b.ZIndex = 22
-		b.Parent = tabList
-		Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
-		tabBtns[name] = b
+	local function addTab(name, icon, grid)
+		local b, bgf, lbl = gradBtn(tabList, "  " .. icon .. "  " .. name, UDim2.new(1, 0, 0, 28), UDim2.new(0, 0, 0, 0), 12, 24, 8)
+		bgf.BackgroundTransparency = 1
+		lbl.Font = Enum.Font.GothamMedium
+		lbl.TextColor3 = P.sub
+		lbl.TextXAlignment = Enum.TextXAlignment.Left
+		tabBtns[name] = {bgf, lbl}
 		b.MouseButton1Click:Connect(function() selectTab(name) end)
 
 		local page
@@ -13522,43 +13732,64 @@ do
 			page = Instance.new("ScrollingFrame")
 			page.BackgroundTransparency = 1
 			page.BorderSizePixel = 0
-			page.ScrollBarThickness = 5
-			page.ScrollBarImageColor3 = currentScroll
+			page.ScrollBarThickness = 3
+			page.ScrollBarImageColor3 = P.accent
 			page.CanvasSize = UDim2.new(0, 0, 0, 0)
 			page.AutomaticCanvasSize = Enum.AutomaticSize.Y
-			table.insert(scroll, page)
 			local g = Instance.new("UIGridLayout")
-			g.CellSize = UDim2.new(0, 166, 0, 30)
+			g.CellSize = UDim2.new(0, 172, 0, 34)
 			g.CellPadding = UDim2.new(0, 6, 0, 6)
 			g.SortOrder = Enum.SortOrder.LayoutOrder
 			g.Parent = page
 		end
 		page.Size = UDim2.new(1, 0, 1, 0)
 		page.Visible = false
-		page.ZIndex = 21
+		page.ZIndex = 22
 		page.Parent = pageArea
 		pages[name] = page
 		return page
 	end
 
-	-- ---------- pembuat item ----------
-	local function styleBtn(b)
-		b.BorderSizePixel = 0
-		b.Font = Enum.Font.GothamMedium
-		b.TextSize = 12
-		b.TextColor3 = Color3.new(1, 1, 1)
-		b.ZIndex = 22
-		Instance.new("UICorner", b).CornerRadius = UDim.new(0, 6)
+	-- ===== pembuat item =====
+	local function makeCell(page)
+		local f = Instance.new("Frame")
+		f.BackgroundColor3 = P.cell
+		f.BackgroundTransparency = 0.1
+		f.BorderSizePixel = 0
+		f.ZIndex = 23
+		f.Parent = page
+		corner(f, 9)
+		local st = Instance.new("UIStroke")
+		st.Color = P.accent
+		st.Transparency = 0.8
+		st.Parent = f
+		return f, st
 	end
 
-	local function flash(b)
-		task.spawn(function()
-			b.BackgroundColor3 = currentShade3
-			b.TextColor3 = currentText2
-			task.wait(0.15)
-			b.BackgroundColor3 = currentShade2
-			b.TextColor3 = currentText1
-		end)
+	local function cellLabel(parent, text, widthOff)
+		local l = Instance.new("TextLabel")
+		l.BackgroundTransparency = 1
+		l.Position = UDim2.new(0, 10, 0, 0)
+		l.Size = UDim2.new(1, widthOff or -20, 1, 0)
+		l.Font = Enum.Font.GothamMedium
+		l.TextSize = 12
+		l.Text = text
+		l.TextColor3 = P.text
+		l.TextXAlignment = Enum.TextXAlignment.Left
+		l.TextTruncate = Enum.TextTruncate.AtEnd
+		l.ZIndex = 25
+		l.Parent = parent
+		return l
+	end
+
+	local function overlayButton(parent)
+		local b = Instance.new("TextButton")
+		b.BackgroundTransparency = 1
+		b.Size = UDim2.new(1, 0, 1, 0)
+		b.Text = ""
+		b.ZIndex = 27
+		b.Parent = parent
+		return b
 	end
 
 	local function addItem(page, it)
@@ -13567,59 +13798,90 @@ do
 		if kind == "t" then
 			local label, onC, offC = it[2], it[3], it[4] or it[3]
 			local state = false
-			local b = Instance.new("TextButton")
-			b.BackgroundColor3 = currentShade2
-			b.Text = label .. "  [OFF]"
-			styleBtn(b)
-			b.Parent = page
-			b.MouseButton1Click:Connect(function()
+			local f, st = makeCell(page)
+			cellLabel(f, label, -58)
+			local track = Instance.new("Frame")
+			track.AnchorPoint = Vector2.new(1, 0.5)
+			track.Position = UDim2.new(1, -10, 0.5, 0)
+			track.Size = UDim2.new(0, 34, 0, 18)
+			track.BackgroundColor3 = Color3.fromRGB(58, 40, 92)
+			track.BorderSizePixel = 0
+			track.ZIndex = 25
+			track.Parent = f
+			corner(track, 9)
+			local tg = accentGradient(track)
+			tg.Enabled = false
+			local knob = Instance.new("Frame")
+			knob.AnchorPoint = Vector2.new(0, 0.5)
+			knob.Position = UDim2.new(0, 2, 0.5, 0)
+			knob.Size = UDim2.new(0, 14, 0, 14)
+			knob.BackgroundColor3 = Color3.new(1, 1, 1)
+			knob.BorderSizePixel = 0
+			knob.ZIndex = 26
+			knob.Parent = track
+			corner(knob, 7)
+			local btn = overlayButton(f)
+			btn.MouseButton1Click:Connect(function()
 				state = not state
 				execCmd(state and onC or offC)
-				b.Text = label .. (state and "  [ON]" or "  [OFF]")
-				b.BackgroundColor3 = state and currentShade3 or currentShade2
-				b.TextColor3 = state and currentText2 or currentText1
+				tg.Enabled = state
+				track.BackgroundColor3 = state and Color3.new(1, 1, 1) or Color3.fromRGB(58, 40, 92)
+				TweenService:Create(knob, TweenInfo.new(0.18, Enum.EasingStyle.Quad), {
+					Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
+				}):Play()
+				TweenService:Create(st, TweenInfo.new(0.18), {Transparency = state and 0.3 or 0.8}):Play()
 			end)
-		elseif kind == "b" then
-			local b = Instance.new("TextButton")
-			b.BackgroundColor3 = currentShade2
-			b.Text = it[2]
-			styleBtn(b)
-			b.Parent = page
-			b.MouseButton1Click:Connect(function()
-				flash(b)
-				execCmd(it[3])
+		elseif kind == "b" or kind == "f" then
+			local f, st = makeCell(page)
+			cellLabel(f, it[2], -34)
+			local arrow = Instance.new("TextLabel")
+			arrow.BackgroundTransparency = 1
+			arrow.Position = UDim2.new(1, -26, 0, 0)
+			arrow.Size = UDim2.new(0, 20, 1, 0)
+			arrow.Font = Enum.Font.GothamBold
+			arrow.TextSize = 14
+			arrow.Text = ">"
+			arrow.TextColor3 = P.accent
+			arrow.ZIndex = 25
+			arrow.Parent = f
+			local btn = overlayButton(f)
+			btn.MouseEnter:Connect(function()
+				TweenService:Create(st, TweenInfo.new(0.15), {Transparency = 0.2}):Play()
+			end)
+			btn.MouseLeave:Connect(function()
+				TweenService:Create(st, TweenInfo.new(0.15), {Transparency = 0.8}):Play()
+			end)
+			btn.MouseButton1Click:Connect(function()
+				task.spawn(function()
+					TweenService:Create(f, TweenInfo.new(0.1), {BackgroundColor3 = P.accent}):Play()
+					task.wait(0.12)
+					TweenService:Create(f, TweenInfo.new(0.2), {BackgroundColor3 = P.cell}):Play()
+				end)
+				if kind == "f" then
+					local ok, e = pcall(it[3])
+					if not ok then notify("KizzDev", tostring(e), 4) end
+				else
+					execCmd(it[3])
+				end
 			end)
 		elseif kind == "i" then
 			local placeholder, cmd, default, btnText = it[2], it[3], it[4] or "", it[5] or "Set"
-			local f = Instance.new("Frame")
-			f.BackgroundColor3 = currentShade2
-			f.BorderSizePixel = 0
-			f.ZIndex = 22
-			f.Parent = page
-			Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
+			local f = makeCell(page)
 			local tb = Instance.new("TextBox")
 			tb.BackgroundTransparency = 1
-			tb.Position = UDim2.new(0, 6, 0, 0)
-			tb.Size = UDim2.new(1, -66, 1, 0)
+			tb.Position = UDim2.new(0, 10, 0, 0)
+			tb.Size = UDim2.new(1, -72, 1, 0)
 			tb.Font = Enum.Font.Gotham
 			tb.TextSize = 12
 			tb.Text = default
 			tb.PlaceholderText = placeholder
-			tb.PlaceholderColor3 = Color3.fromRGB(140, 150, 170)
-			tb.TextColor3 = Color3.new(1, 1, 1)
+			tb.PlaceholderColor3 = P.sub
+			tb.TextColor3 = P.text
 			tb.ClearTextOnFocus = false
 			tb.TextXAlignment = Enum.TextXAlignment.Left
-			tb.ZIndex = 23
+			tb.ZIndex = 25
 			tb.Parent = f
-			local gb = Instance.new("TextButton")
-			gb.BackgroundColor3 = currentShade3
-			gb.Position = UDim2.new(1, -58, 0, 3)
-			gb.Size = UDim2.new(0, 55, 1, -6)
-			gb.Text = btnText
-			styleBtn(gb)
-			gb.TextColor3 = Color3.new(0, 0, 0)
-			gb.ZIndex = 24
-			gb.Parent = f
+			local gb = gradBtn(f, btnText, UDim2.new(0, 58, 1, -8), UDim2.new(1, -62, 0, 4), 11, 26, 7)
 			local function go()
 				local v = tb.Text
 				if v == "" then
@@ -13637,8 +13899,8 @@ do
 		for _, it in ipairs(list) do addItem(page, it) end
 	end
 
-	-- ---------- HOME ----------
-	local pHome = addTab("Home")
+	-- ===== HOME =====
+	local pHome = addTab("Home", "🏠")
 	local gameName = "..."
 	task.spawn(function()
 		local ok, info = pcall(function() return MarketplaceService:GetProductInfo(PlaceId) end)
@@ -13649,38 +13911,26 @@ do
 	local execName = "Unknown"
 	pcall(function() execName = tostring((identifyexecutor and identifyexecutor()) or "Unknown") end)
 	local infos = {
-		function() return "Hi, " .. displayName end,
+		function() return "Welcome, " .. displayName end,
 		function() return gameName end,
-		function() return "FPS: " .. fps end,
+		function() return "FPS  " .. fps end,
 		function()
 			local ping = "--"
-			pcall(function() ping = math.floor(StatsService.Network.ServerStatsItem["Data Ping"]:GetValue()) .. "ms" end)
-			return "Ping: " .. ping
+			pcall(function() ping = math.floor(StatsService.Network.ServerStatsItem["Data Ping"]:GetValue()) .. " ms" end)
+			return "Ping  " .. ping
 		end,
-		function() return "Players: " .. #Players:GetPlayers() .. "/" .. Players.MaxPlayers end,
-		function() return "Executor: " .. execName end,
+		function() return "Players  " .. #Players:GetPlayers() .. "/" .. Players.MaxPlayers end,
+		function() return "Executor  " .. execName end,
 	}
 	local infoLabels = {}
 	for i, fn in ipairs(infos) do
-		local f = Instance.new("Frame")
-		f.BackgroundColor3 = currentShade2
-		f.BorderSizePixel = 0
+		local f = makeCell(pHome)
 		f.LayoutOrder = i
-		f.ZIndex = 22
-		f.Parent = pHome
-		Instance.new("UICorner", f).CornerRadius = UDim.new(0, 6)
-		local l = Instance.new("TextLabel")
-		l.BackgroundTransparency = 1
-		l.Position = UDim2.new(0, 8, 0, 0)
-		l.Size = UDim2.new(1, -16, 1, 0)
-		l.Font = i == 1 and Enum.Font.GothamBold or Enum.Font.Gotham
-		l.TextSize = 12
-		l.TextColor3 = i == 1 and KIZZ_CYAN or Color3.new(1, 1, 1)
-		l.TextXAlignment = Enum.TextXAlignment.Left
-		l.TextTruncate = Enum.TextTruncate.AtEnd
-		l.Text = ""
-		l.ZIndex = 23
-		l.Parent = f
+		local l = cellLabel(f, "")
+		if i == 1 then
+			l.Font = Enum.Font.GothamBold
+			l.TextColor3 = P.accent2
+		end
 		infoLabels[i] = l
 	end
 	local function refreshInfo()
@@ -13712,8 +13962,8 @@ do
 		{"b", "Notify Ping", "notifyping"},
 	})
 
-	-- ---------- PLAYER ----------
-	local pPlayer = addTab("Player")
+	-- ===== PLAYER =====
+	local pPlayer = addTab("Player", "👤")
 	addItems(pPlayer, {
 		{"b", "God Mode", "god"},
 		{"t", "Invisible", "invisible", "visible"},
@@ -13751,8 +14001,8 @@ do
 		{"i", "Team name", "team", "", "Join"},
 	})
 
-	-- ---------- MOVEMENT ----------
-	local pMove = addTab("Movement")
+	-- ===== MOVEMENT =====
+	local pMove = addTab("Movement", "🦋")
 	addItems(pMove, {
 		{"t", "Fly", "fly", "unfly"},
 		{"t", "Vehicle Fly", "togglevfly", "togglevfly"},
@@ -13785,8 +14035,8 @@ do
 		{"i", "Tween to Player", "tweengoto", "", "Go"},
 	})
 
-	-- ---------- VISUAL ----------
-	local pVis = addTab("Visual")
+	-- ===== VISUAL =====
+	local pVis = addTab("Visual", "👁")
 	addItems(pVis, {
 		{"t", "ESP", "esp", "noesp"},
 		{"t", "Chams", "chams", "nochams"},
@@ -13820,8 +14070,8 @@ do
 		{"b", "Unlocate", "nolocate"},
 	})
 
-	-- ---------- PLAYERS (target) ----------
-	local pTarget = addTab("Players")
+	-- ===== PLAYERS =====
+	local pTarget = addTab("Players", "🎯")
 	addItems(pTarget, {
 		{"i", "Player", "goto", "", "Goto"},
 		{"i", "Player", "loopgoto", "", "Loop"},
@@ -13856,8 +14106,8 @@ do
 		{"b", "Stop Staff Watch", "unstaffwatch"},
 	})
 
-	-- ---------- TROLL ----------
-	local pTroll = addTab("Troll")
+	-- ===== TROLL =====
+	local pTroll = addTab("Troll", "😈")
 	addItems(pTroll, {
 		{"t", "Fling", "fling", "unfling"},
 		{"t", "Walk Fling", "walkfling", "unwalkfling"},
@@ -13891,8 +14141,8 @@ do
 		{"i", "Whisper: player msg", "whisper", "", "Send"},
 	})
 
-	-- ---------- WORLD ----------
-	local pWorld = addTab("World")
+	-- ===== WORLD =====
+	local pWorld = addTab("World", "🌍")
 	addItems(pWorld, {
 		{"t", "Unlock Workspace", "unlockws", "lockws"},
 		{"t", "Invisible Parts", "invisibleparts", "uninvisibleparts"},
@@ -13928,8 +14178,8 @@ do
 		{"i", "Player", "tpunanchored", "", "TP Parts"},
 	})
 
-	-- ---------- TOOLS ----------
-	local pTools = addTab("Tools")
+	-- ===== TOOLS =====
+	local pTools = addTab("Tools", "🧰")
 	addItems(pTools, {
 		{"b", "Dex Explorer", "explorer"},
 		{"b", "Moon Dex", "moondex"},
@@ -13962,46 +14212,55 @@ do
 		{"b", "Debug Mode", "debug"},
 	})
 
-	-- ---------- SCRIPT (Lua executor) ----------
-	local pScript = addTab("Script", false)
+	-- ===== SCRIPT (Lua executor) =====
+	local pScript = addTab("Script", "📜", false)
+	local codeWrap = Instance.new("Frame")
+	codeWrap.BackgroundColor3 = P.cell
+	codeWrap.BackgroundTransparency = 0.1
+	codeWrap.BorderSizePixel = 0
+	codeWrap.Size = UDim2.new(1, 0, 1, -38)
+	codeWrap.ZIndex = 23
+	codeWrap.Parent = pScript
+	corner(codeWrap, 10)
 	local codeBox = Instance.new("TextBox")
-	codeBox.BackgroundColor3 = currentShade2
-	codeBox.BorderSizePixel = 0
-	codeBox.Position = UDim2.new(0, 0, 0, 0)
-	codeBox.Size = UDim2.new(1, -4, 1, -36)
+	codeBox.BackgroundTransparency = 1
+	codeBox.Position = UDim2.new(0, 10, 0, 8)
+	codeBox.Size = UDim2.new(1, -20, 1, -16)
 	codeBox.Font = Enum.Font.Code
 	codeBox.TextSize = 13
 	codeBox.Text = ""
 	codeBox.PlaceholderText = "-- Tulis atau tempel script Lua di sini, lalu tekan Execute\nprint('Hello KizzDev')"
-	codeBox.PlaceholderColor3 = Color3.fromRGB(140, 150, 170)
-	codeBox.TextColor3 = Color3.new(1, 1, 1)
+	codeBox.PlaceholderColor3 = P.sub
+	codeBox.TextColor3 = P.text
 	codeBox.ClearTextOnFocus = false
 	codeBox.MultiLine = true
 	codeBox.TextWrapped = true
 	codeBox.TextXAlignment = Enum.TextXAlignment.Left
 	codeBox.TextYAlignment = Enum.TextYAlignment.Top
-	codeBox.ZIndex = 22
-	codeBox.Parent = pScript
-	table.insert(shade2, codeBox)
-	Instance.new("UICorner", codeBox).CornerRadius = UDim.new(0, 6)
-	local cPad = Instance.new("UIPadding")
-	cPad.PaddingLeft = UDim.new(0, 6)
-	cPad.PaddingTop = UDim.new(0, 4)
-	cPad.Parent = codeBox
+	codeBox.ZIndex = 25
+	codeBox.Parent = codeWrap
 
 	local function scriptBtn(x, w, text, cb, accent)
-		local b = Instance.new("TextButton")
-		b.BackgroundColor3 = accent and currentShade3 or currentShade2
-		b.Position = UDim2.new(0, x, 1, -30)
-		b.Size = UDim2.new(0, w, 0, 28)
-		b.Text = text
-		styleBtn(b)
-		b.TextSize = 13
-		if accent then b.TextColor3 = Color3.new(0, 0, 0) end
-		b.Parent = pScript
+		local b
+		if accent then
+			b = gradBtn(pScript, text, UDim2.new(0, w, 0, 30), UDim2.new(0, x, 1, -32), 12, 24, 8)
+		else
+			b = Instance.new("TextButton")
+			b.BackgroundColor3 = P.cell
+			b.Position = UDim2.new(0, x, 1, -32)
+			b.Size = UDim2.new(0, w, 0, 30)
+			b.Font = Enum.Font.GothamBold
+			b.TextSize = 12
+			b.Text = text
+			b.TextColor3 = Color3.new(1, 1, 1)
+			b.BorderSizePixel = 0
+			b.ZIndex = 24
+			b.Parent = pScript
+			corner(b, 8)
+		end
 		b.MouseButton1Click:Connect(cb)
 	end
-	scriptBtn(0, 90, "Execute", function()
+	scriptBtn(0, 96, "Execute", function()
 		local code = codeBox.Text
 		if code == "" then return end
 		if type(loadstring) ~= "function" then
@@ -14018,24 +14277,108 @@ do
 			if not ok then notify("Runtime Error", tostring(e), 8) end
 		end)
 	end, true)
-	scriptBtn(96, 70, "Clear", function() codeBox.Text = "" end)
-	scriptBtn(172, 90, "Copy", function()
+	scriptBtn(102, 70, "Clear", function() codeBox.Text = "" end)
+	scriptBtn(178, 70, "Copy", function()
 		if codeBox.Text ~= "" then toClipboard(codeBox.Text) end
 	end)
 	featureCount = featureCount + 1
 
-	-- ---------- API ----------
-	titleL.Text = "KizzDev Hub  |  " .. featureCount .. "+ features"
-	dragGUI(root)
+	-- ===== SETTINGS =====
+	local pSet = addTab("Settings", "⚙")
+	addItems(pSet, {
+		{"f", "Panel Klasik (command list)", function()
+			Holder.Visible = not Holder.Visible
+			if Holder.Visible then maximizeHolder() end
+		end},
+		{"f", "Reset Posisi Hub", function()
+			root.Position = UDim2.fromScale(0.5, 0.5)
+		end},
+		{"f", "Unload KizzDev", function() execCmd("exit") end},
+	})
+
+	-- ===== tombol melayang (buka/tutup hub) =====
+	local floatBtn, _, floatLbl = gradBtn(ScaledHolder, "K", UDim2.new(0, 48, 0, 48), UDim2.new(0, 14, 0.5, -24), 24, 40, 24)
+	floatBtn.Name = randomString()
+	floatLbl.Font = Enum.Font.GothamBlack
+	local floatStroke = gradientStroke(floatBtn, 2.5, P.accent, P.accent2)
+	task.spawn(function()
+		while floatBtn.Parent do
+			TweenService:Create(floatStroke, TweenInfo.new(0.9, Enum.EasingStyle.Sine), {Thickness = 4.5}):Play()
+			task.wait(0.9)
+			TweenService:Create(floatStroke, TweenInfo.new(0.9, Enum.EasingStyle.Sine), {Thickness = 2}):Play()
+			task.wait(0.9)
+		end
+	end)
+	local floatMoved = makeDraggable(floatBtn, floatBtn)
+
+	local opening = false
+	local function openHub()
+		if opening then return end
+		opening = true
+		root.Visible = true
+		rootScale.Scale = 0.6
+		TweenService:Create(rootScale, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1}):Play()
+		refreshInfo()
+		task.wait(0.35)
+		opening = false
+	end
+	local function closeHub()
+		if opening then return end
+		opening = true
+		TweenService:Create(rootScale, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Scale = 0.6}):Play()
+		task.wait(0.2)
+		root.Visible = false
+		opening = false
+	end
+
+	floatBtn.MouseButton1Click:Connect(function()
+		if floatMoved() then return end
+		if root.Visible then closeHub() else openHub() end
+	end)
+	closeB.MouseButton1Click:Connect(closeHub)
+	minB.MouseButton1Click:Connect(closeHub)
+	makeDraggable(top, root)
+	UserInputService.InputBegan:Connect(function(input, gpe)
+		if not gpe and input.KeyCode == Enum.KeyCode.RightShift then
+			if root.Visible then closeHub() else openHub() end
+		end
+	end)
+
+	-- ===== gambar (banner & avatar) dimuat async =====
+	task.spawn(function()
+		local bsrc = (type(getgenv) == "function" and getgenv().KIZZDEV_BANNER) or KIZZ_BANNER_URL
+		local asrc = (type(getgenv) == "function" and getgenv().KIZZDEV_AVATAR) or KIZZ_AVATAR_URL
+		local bimg = kizzAsset(bsrc)
+		if bimg then
+			banner.Image = bimg
+			banner.Visible = true
+		end
+		local aimg = kizzAsset(asrc)
+		if not aimg then
+			pcall(function()
+				aimg = Players:GetUserThumbnailAsync(Players.LocalPlayer.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
+			end)
+		end
+		if aimg then avatar.Image = aimg end
+	end)
+
+	-- ===== API =====
+	subL.Text = "Hub  |  " .. featureCount .. "+ features  |  RightShift"
 	selectTab("Home")
 	refreshInfo()
 
-	function KizzHub.Open() root.Visible = true refreshInfo() end
-	function KizzHub.Close() root.Visible = false end
-	function KizzHub.Toggle() root.Visible = not root.Visible if root.Visible then refreshInfo() end end
+	function KizzHub.Open() task.spawn(openHub) end
+	function KizzHub.Close() task.spawn(closeHub) end
+	function KizzHub.Toggle() if root.Visible then task.spawn(closeHub) else task.spawn(openHub) end end
+	function KizzHub.Focus()
+		task.spawn(openHub)
+		task.wait(0.05)
+		cmdBox:CaptureFocus()
+	end
+	KizzFocusCmd = KizzHub.Focus
 end
 
--- tombol H di title bar membuka/menutup Hub
+-- tombol H di panel klasik membuka Hub
 local HomeButton = Instance.new("TextButton")
 HomeButton.Name = "HomeButton"
 HomeButton.Parent = Holder
@@ -14103,7 +14446,7 @@ local function kizzLoading()
 	end
 
 	local nameL = lbl(14, 50, 38, Enum.Font.GothamBlack, "KizzDev", KIZZ_CYAN)
-	local subL = lbl(62, 16, 12, Enum.Font.GothamMedium, "Admin Commands  -  based on Infinite Yield", Color3.fromRGB(150, 160, 180))
+	local subL = lbl(62, 16, 12, Enum.Font.GothamMedium, "Hub  -  based on Infinite Yield", Color3.fromRGB(150, 160, 180))
 	local statusL = lbl(88, 18, 14, Enum.Font.Gotham, "Starting...")
 
 	local barBg = Instance.new("Frame")
@@ -14126,7 +14469,7 @@ local function kizzLoading()
 	fc.CornerRadius = UDim.new(1, 0)
 	fc.Parent = fill
 	local grad = Instance.new("UIGradient")
-	grad.Color = ColorSequence.new(Color3.fromRGB(0, 120, 255), Color3.fromRGB(0, 255, 230))
+	grad.Color = ColorSequence.new(Color3.fromRGB(150, 70, 255), Color3.fromRGB(255, 90, 220))
 	grad.Parent = fill
 
 	-- garis tepi berdenyut selama loading
@@ -14176,41 +14519,14 @@ local function kizzLoading()
 	card:Destroy()
 end
 
--- ---------- INTRO DI DALAM WINDOW ----------
+-- ---------- INTRO ----------
 task.spawn(function()
 	task.wait()
-	local brand
-	pcall(function()
-		Logo.Visible = false -- logo IY diganti teks KizzDev
-		brand = Instance.new("TextLabel")
-		brand.BackgroundTransparency = 1
-		brand.Position = UDim2.new(0, 0, 0, 75)
-		brand.Size = UDim2.new(0, 250, 0, 60)
-		brand.Font = Enum.Font.GothamBlack
-		brand.TextSize = 34
-		brand.Text = "KizzDev"
-		brand.TextColor3 = KIZZ_CYAN
-		brand.ZIndex = 11
-		brand.Parent = Holder
-	end)
-
 	pcall(kizzLoading)
-
-	pcall(function()
-		Credits:TweenPosition(UDim2.new(0, 0, 0.9, 0), "Out", "Quart", 0.2)
-		task.wait(1)
-		local OutInfo = TweenInfo.new(1.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
-		if brand then TweenService:Create(brand, OutInfo, {TextTransparency = 1}):Play() end
-		TweenService:Create(IntroBackground, OutInfo, {BackgroundTransparency = 1}):Play()
-		Credits:TweenPosition(UDim2.new(0, 0, 0.9, 30), "Out", "Quart", 0.2)
-		task.wait(0.2)
-	end)
 	pcall(function() Logo:Destroy() end)
 	pcall(function() Credits:Destroy() end)
 	pcall(function() IntroBackground:Destroy() end)
-	pcall(function() if brand then brand:Destroy() end end)
-
+	pcall(function() Holder.Visible = false end)
 	KizzHub.Open()
-	minimizeHolder()
-	notify("KizzDev", "Welcome, " .. displayName .. "! Hub terbuka otomatis. Tombol H di title bar untuk buka/tutup, atau ketik 'cmds'.", 8)
+	notify("KizzDev", "Welcome, " .. displayName .. "! Hub terbuka. Tombol K (melayang) atau RightShift untuk buka/tutup.", 8)
 end)
